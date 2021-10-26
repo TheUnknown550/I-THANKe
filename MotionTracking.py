@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import time
+import array as arr
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 def watch(start):
@@ -24,11 +25,13 @@ def calculate_angle(a, b, c):
 #video
 cap = cv2.VideoCapture(0)
 
-#counter
+#variables
 counter =0
 stage = None
 lapse = 0
 i=0
+Time = 0
+Arr=arr.array('i',[])
 ## Setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
@@ -71,14 +74,12 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 stage = "up"
                 counter += 1
             cv2.putText(image, f'Counter: {int(counter)}', (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
-
-            if counter <= i:
-                start = time.time()
-            elif counter > i:
-                i=counter
-                end = time.time()
-                lapes = end - start
-            cv2.putText(image, f'Timer: {int(lapes)}', (20, 450), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
+            if counter == i:
+                print(Time)
+                start=time.time()
+                i=counter+1
+            Time = time.time()-start
+            cv2.putText(image, f'Timer: {int(Time)}', (20, 450), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
             print("Start= ",start,"\n","End=",end,"\n","lapes= ",lapes)
         except:
             pass
