@@ -1,8 +1,11 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-mp_drawing = mp.solutions.mediapipe.python.solutions.drawing_utils
+import time
+mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
+def watch(start):
+    start=time.time()
 def calculate_angle(a, b, c):
     a = np.array(a)
     b = np.array(b)
@@ -16,12 +19,16 @@ def calculate_angle(a, b, c):
 
     return angle
 
+
+
 #video
 cap = cv2.VideoCapture(0)
 
 #counter
 counter =0
 stage = None
+lapse = 0
+i=0
 ## Setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     while cap.isOpened():
@@ -38,17 +45,16 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        # Extract landmarks
         try:
             landmarks = results.pose_landmarks.landmark
 
             # Get coordinates
-            shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            elbow = [landmarks[mp_pose.PoseLandmark.LEFT_EBLOW.value].x,
-                     landmarks[mp_pose.PoseLandmark.LEFT_EBLOW.value].y]
-            wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                     landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                   landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                    landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                     landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
 
             # Calculate angle
             angle = calculate_angle(shoulder, elbow, wrist)
@@ -58,14 +64,22 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                         tuple(np.multiply(elbow, [640, 480]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
                         )
-            #counter
+            # counter
             if angle > 160:
                 stage = "down"
-            if angle < 80 and stage =='down':
-                stage="up"
-                counter +=1
-                print(counter)
-            cv2.putText(image, f'Counter: {int(counter)}' , (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
+            if angle < 70 and stage == 'down':
+                stage = "up"
+                counter += 1
+            cv2.putText(image, f'Counter: {int(counter)}', (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
+
+            if counter <= i:
+                start = time.time()
+            elif counter > i:
+                i=counter
+                end = time.time()
+                lapes = end - start
+            cv2.putText(image, f'Timer: {int(lapes)}', (20, 450), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
+            print("Start= ",start,"\n","End=",end,"\n","lapes= ",lapes)
         except:
             pass
 
@@ -82,4 +96,3 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 
     cap.release()
     cv2.destroyAllWindows()
-
