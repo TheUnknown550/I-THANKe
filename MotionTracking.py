@@ -5,8 +5,6 @@ import time
 import array as arr
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
-def watch(start):
-    start=time.time()
 def calculate_angle(a, b, c):
     a = np.array(a)
     b = np.array(b)
