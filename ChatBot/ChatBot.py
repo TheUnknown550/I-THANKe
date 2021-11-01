@@ -5,14 +5,18 @@ mic = sr.Microphone(1)
 mic
 recog = sr.Recognizer()
 recog
-i=0
 with mic as source:
- for i in range(10):
-  print("listening")
-  audio = recog.listen(source)
-  try:
-   Speech=recog.recognize_google(audio,language='th')
-   print("you said: ",Speech)
-   IT.ChatBot(Speech)
-  except:
-   pass
+    while True:
+        print("listening",end='\r')
+        audio = recog.listen(source)
+        print('Calibrating', end='\r')
+        try:
+            Speech=recog.recognize_google(audio,language='th')
+            print("you said: ",Speech)
+            if 'จบ' in Speech or 'หยุด' in Speech:
+                print('รับทราบครับ')
+                break
+            IT.ChatBot(Speech)
+            input('continue? ')
+        except:
+            pass

@@ -83,23 +83,20 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 cv2.putText(image, f'FAIL', (170, 280), cv2.FONT_HERSHEY_PLAIN, 10, (0, 0, 255), 10)
                 if counter == 0:
                     Start_F=time.time()
-                    count=counter
                     counter+=1
+                    count+=1
+                    print('You failed ',count,' times')
                 End_F=time.time()
                 Time_F=End_F-Start_F
-                print("Start_F = ",Start_F)
-                print("End_F = ",End_F)
-                print("Time_F = ",Time_F)
                 cont=0
             else:
                 if cont==0:
                     Time_Fa=Time_Fa+Time_F
                     cont+=1
                 Curent=time.time()-start
-                print("Curent = ",Curent)
                 Time_L=Time-Curent+Time_Fa
-                print("Time_L",Time_L)
                 counter=0
+            print(' ',int(Time_L),end='\r')
             cv2.putText(image, f'Time left: {int(Time_L)}', (20, 450), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
             if Time_L<0:
                 break

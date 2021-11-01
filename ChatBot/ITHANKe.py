@@ -1,4 +1,22 @@
 import youtube_dl
+
+def ytDownload(URL):
+    video_url = URL
+    video_info = youtube_dl.YoutubeDL().extract_info(
+        url = video_url,download=False
+    )
+    filename = f"{video_info['title']}.mp3"
+    options={
+        'format':'bestaudio/best',
+        'keepvideo':False, 
+        'outtmpl':filename,
+    }
+
+    with youtube_dl.YoutubeDL(options) as ydl:
+        ydl.download([video_info['webpage_url']])
+
+    print("Download complete... {}".format(filename))
+
 def ChatBot(Speech):
     if 'สวัสดี' in Speech:
        print("สวัสดีครับ มีอะไรให้ช่วยไหมครับ")                  
@@ -17,19 +35,3 @@ def ChatBot(Speech):
     else:
         print("ขอโทษด้วยฉันไม่เข้าใจ")
 
-def ytDownload(URL):
-    video_url = URL
-    video_info = youtube_dl.YoutubeDL().extract_info(
-        url = video_url,download=False
-    )
-    filename = f"{video_info['title']}.mp3"
-    options={
-        'format':'bestaudio/best',
-        'keepvideo':False, 
-        'outtmpl':filename,
-    }
-
-    with youtube_dl.YoutubeDL(options) as ydl:
-        ydl.download([video_info['webpage_url']])
-
-    print("Download complete... {}".format(filename))
