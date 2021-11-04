@@ -78,7 +78,6 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 i=counter+1
             Time = time.time()-start
             cv2.putText(image, f'Timer: {int(Time)}', (20, 450), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 5)
-            print("Start= ",start,"\n","End=",end,"\n","lapes= ",lapes)
         except:
             pass
 
